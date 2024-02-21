@@ -1,0 +1,7 @@
+aiohttp
+aiohttp-middlewares
+pillow
+pydantic
+SQLAlchemy
+aiosqlite
+asyncpg

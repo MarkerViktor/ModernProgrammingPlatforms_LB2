@@ -1,0 +1,39 @@
+version: "3.9"
+services:
+  database:
+    image: postgres:16.1-alpine
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "password"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - "6432:5432"
+    expose:
+      - "5432"
+
+  frontend:
+    build: ./frontend
+    environment:
+      HOST: "markerweb.local"
+      PORT: "80"
+      BACKEND_HOST: "backend"
+      BACKEND_PORT: "8080"
+    volumes:
+      - ./storage:/storage:ro
+    ports:
+      - "80:80"
+
+  backend:
+    build: ./backend
+    environment:
+      DB_URL: "postgresql://user:password@database:5432/postgres"
+      STORAGE_PATH: "/storage"
+    volumes:
+      - ./storage:/storage
+    expose:
+      - "8080"
+    depends_on:
+      - database
+    restart: unless-stopped
